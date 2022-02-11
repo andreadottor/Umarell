@@ -47,13 +47,13 @@
 
     protected override void OnInitialized()
     {
-        MessageBoxService.MessageBoxShowInvoked +=
-            (string title, string text, MessageBoxType messageBoxType, Func<bool, Task> returnCallback) =>
+        MessageBoxService.MessageBoxShow +=
+            (sender, e) =>
             {
-                Title = title;
-                Text = text;
-                MessageBoxType = messageBoxType;
-                ReturnCallback = returnCallback;
+                Title = e.Title;
+                Text = e.Text;
+                MessageBoxType = e.MessageBoxType;
+                ReturnCallback = e.ReturnCallback;
                 StateHasChanged();
                 module?.InvokeVoid("show", modalInstance);
             };
