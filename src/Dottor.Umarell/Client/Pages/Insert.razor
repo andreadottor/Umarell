@@ -1,16 +1,110 @@
 ﻿@page "/Insert"
+@implements IAsyncDisposable
 @attribute [Authorize]
+
+@inject IJSRuntime JS
+@inject ApiProxyService ApiProxy
 
 <PageTitle>Nuovo cantiere</PageTitle>
 
 <Page Title="Inserimento nuovo cantiere">
-    
 
-    
+
+    <EditForm Model="this" OnValidSubmit="Save">
+
+        <div class="form-group">
+            <label for="txtTitle">Titolo</label>
+            <InputText @bind-Value="Title" class="form-control" id="txtTitle" />
+        </div>
+
+        <div class="form-group">
+            <label for="fileImage">Foto</label>
+            <InputFile OnChange="@LoadFiles" class="form-control" id="fileImage" />
+        </div>
+
+        <div class="form-group">
+            <label for="map">Posizione</label>
+            <div class="map-element" @ref="mapElement" id="map"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Salva</button>
+    </EditForm>
+    <hr />
+    Latitude: @Latitude<br />
+    Longitude: @Longitude<br />
+
+
 </Page>
 
 
 
 @code {
+    private ElementReference mapElement;
+    private IJSUnmarshalledObjectReference? mapModule;
+    private IJSObjectReference? mapInstance;
+    private DotNetObjectReference<Insert>? objRef;
 
+    private double? Latitude { get; set; }
+    private double? Longitude { get; set; }
+    private IBrowserFile? Image { get; set; }
+    public string Title { get; set; }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            mapModule = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", "./Pages/Insert.razor.js");
+            mapInstance = await mapModule.InvokeAsync<IJSObjectReference>("initMap", mapElement, objRef);
+        }
+    }
+
+    [JSInvokable]
+    public void SetMarker(double lat, double lon)
+    {
+        Latitude = lat;
+        Longitude = lon;
+        StateHasChanged();
+    }
+
+    private void LoadFiles(InputFileChangeEventArgs e)
+    {
+        Image = e.File;
+    }
+
+
+    private async Task Save()
+    {
+        var model = new BuildingSiteInsertModel();
+        model.Title = Title;
+        model.Latitude = Latitude.Value;
+        model.Longitude = Longitude.Value;
+
+        if (Image != null)
+        {
+            using Stream stream = Image.OpenReadStream();
+            using MemoryStream ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+
+            model.FileName = Image.Name;
+            model.FileContent = ms.ToArray();
+        }
+        var result = await ApiProxy.InsertBuildingSiteAsync(model);
+
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (mapInstance is not null)
+        {
+            await mapInstance.DisposeAsync();
+        }
+
+        if (mapModule is not null)
+        {
+            await mapModule.DisposeAsync();
+        }
+
+        objRef?.Dispose();
+    }
 }

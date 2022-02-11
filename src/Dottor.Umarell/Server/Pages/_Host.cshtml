@@ -1,7 +1,9 @@
 ﻿@page
 @model Dottor.Umarell.Server.Pages._HostModel
+@inject IConfiguration Config
 @{
     Layout = "";
+    var googleMapsKey = Config["GoogleMaps:Key"];
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +35,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="~/_content/Dottor.Umarell.UI/js/app.js"></script>
     <script src="~/_framework/blazor.webassembly.js"></script>
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false&libraries=drawing&key=@googleMapsKey"></script>
 
 </body>
 </html>

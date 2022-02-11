@@ -13,5 +13,6 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.TryAddSingleton<AuthenticationStateProvider, HostAuthenticationStateProvider>();
 builder.Services.TryAddSingleton(sp => (HostAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
+builder.Services.AddScoped<ApiProxyService>();
 
 await builder.Build().RunAsync();
