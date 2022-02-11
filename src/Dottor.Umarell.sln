@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32203.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dottor.Umarell.Server", "Dottor.Umarell\Server\Dottor.Umarell.Server.csproj", "{BF96163F-A52B-4293-9D55-1127A8711E9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dottor.Umarell.Server", "Dottor.Umarell\Server\Dottor.Umarell.Server.csproj", "{BF96163F-A52B-4293-9D55-1127A8711E9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dottor.Umarell.Client", "Dottor.Umarell\Client\Dottor.Umarell.Client.csproj", "{FD3D1830-7097-4EB4-B85E-D2A57EEBC0A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dottor.Umarell.Client", "Dottor.Umarell\Client\Dottor.Umarell.Client.csproj", "{FD3D1830-7097-4EB4-B85E-D2A57EEBC0A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dottor.Umarell.Shared", "Dottor.Umarell\Shared\Dottor.Umarell.Shared.csproj", "{09EEDF15-50B1-4651-97D0-E689F8A0F90B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dottor.Umarell.Shared", "Dottor.Umarell\Shared\Dottor.Umarell.Shared.csproj", "{09EEDF15-50B1-4651-97D0-E689F8A0F90B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dottor.Umarell.UI", "Dottor.Umarell.UI\Dottor.Umarell.UI.csproj", "{75AE6485-6297-4EC0-9C90-C5464E513067}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dottor.Umarell.UI", "Dottor.Umarell.UI\Dottor.Umarell.UI.csproj", "{75AE6485-6297-4EC0-9C90-C5464E513067}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,46 @@
+﻿@page
+@model Dottor.Umarell.Server.Pages.Account.LoginModel
+@{
+    Layout = "_LayoutLogin";
+}
+
+
+<div class="card shadow-lg border-0 rounded-lg mt-5">
+    <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col text-center">
+                <h1>Umarell 2.0</h1>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col text-center">
+                <img src="~/images/logo_xedotnet_135x81.png" alt="xe logo" height="80" />
+                <img src="~/images/umarell_logo.png" alt="umarell logo" height="100" />
+            </div>
+        </div>
+        <form method="post">
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Username" class="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
+                <label for="inputEmail">Email address</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" value="@Model.Input.Password" class="form-control" id="inputPassword" type="password" placeholder="Password" />
+                <label for="inputPassword">Password</label>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+            {
+                <div class="text-danger validation-message mb-3" role="alert">
+                    @Model.ErrorMessage
+                </div>
+            }
+            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                @*                <a class="small" href="password.html">Forgot Password?</a>*@
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+    </div>
+    @*    <div class="card-footer text-center py-3">
+        <div class="small"><a href="register.html">Need an account? Sign up!</a></div>
+        </div>*@
+</div>
