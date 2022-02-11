@@ -1,5 +1,6 @@
 using Dottor.Umarell.Client;
 using Dottor.Umarell.Client.Services;
+using Dottor.Umarell.UI;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -14,5 +15,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.TryAddSingleton<AuthenticationStateProvider, HostAuthenticationStateProvider>();
 builder.Services.TryAddSingleton(sp => (HostAuthenticationStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
 builder.Services.AddScoped<ApiProxyService>();
+builder.Services.AddUmarellUI();
 
 await builder.Build().RunAsync();

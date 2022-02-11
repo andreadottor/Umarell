@@ -4,6 +4,7 @@
 
 @inject IJSRuntime JS
 @inject ApiProxyService ApiProxy
+@inject IMessageBoxService MessageBoxService
 
 <PageTitle>Nuovo cantiere</PageTitle>
 
@@ -90,6 +91,8 @@
             model.FileContent = ms.ToArray();
         }
         var result = await ApiProxy.InsertBuildingSiteAsync(model);
+
+        await MessageBoxService.ShowAlertAsync("Inserimento", "Inserimento avvenuto con successo");
 
     }
 

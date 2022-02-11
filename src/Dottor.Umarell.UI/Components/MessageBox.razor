@@ -1,5 +1,95 @@
-﻿<h3>MessageBox</h3>
+﻿@implements IAsyncDisposable
+@inject IMessageBoxService MessageBoxService
+@inject IJSRuntime JS
+
+
+
+<div @ref="modalElement" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Title</h5>
+            </div>
+            <div class="modal-body">
+                @Text
+            </div>
+            <div class="modal-footer">
+                @if (MessageBoxType == MessageBoxType.Alert)
+                {
+                    <button type="button" class="btn btn-primary" @onclick="() => Callback(true)">
+                        Ok
+                    </button>
+                }
+                else if (MessageBoxType == MessageBoxType.Confirm)
+                {
+                    <button type="button" class="btn btn-primary" @onclick="() => Callback(true)">
+                        Ok
+                    </button>
+
+                    <button type="button" class="btn btn-primary" @onclick="() => Callback(false)">
+                        Cancel
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 
 @code {
+    private string Title { get; set; } = "";
+    private string Text { get; set; } = "";
+    private MessageBoxType MessageBoxType { get; set; } = MessageBoxType.Alert;
+    private Func<bool, Task> ReturnCallback { get; set; }
 
+    private ElementReference modalElement;
+    private IJSUnmarshalledObjectReference? module;
+    private IJSObjectReference? modalInstance;
+
+    protected override void OnInitialized()
+    {
+        MessageBoxService.MessageBoxShowInvoked +=
+            (string title, string text, MessageBoxType messageBoxType, Func<bool, Task> returnCallback) =>
+            {
+                Title = title;
+                Text = text;
+                MessageBoxType = messageBoxType;
+                ReturnCallback = returnCallback;
+                StateHasChanged();
+                module?.InvokeVoid("show", modalInstance);
+            };
+    }
+
+    private void Callback(bool result)
+    {
+        if (ReturnCallback != null) ReturnCallback.Invoke(result);
+        module?.InvokeVoid("hide", modalInstance);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", "../_content/Dottor.Umarell.UI/Components/MessageBox.razor.js");
+            modalInstance = await module.InvokeAsync<IJSObjectReference>("init", modalElement);
+        }
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (modalInstance is not null)
+        {
+            await modalInstance.DisposeAsync();
+        }
+
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+
+    }
 }
