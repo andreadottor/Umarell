@@ -1,4 +1,5 @@
 ﻿@page "/Insert"
+@using System.ComponentModel.DataAnnotations
 @implements IAsyncDisposable
 @attribute [Authorize]
 
@@ -6,16 +7,14 @@
 @inject ApiProxyService ApiProxy
 @inject IMessageBoxService MessageBoxService
 
-<PageTitle>Nuovo cantiere</PageTitle>
-
 <Page Title="Inserimento nuovo cantiere">
 
-
-    <EditForm Model="this" OnValidSubmit="Save">
-
+    <EditForm EditContext="editContext" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
         <div class="form-group">
             <label for="txtTitle">Titolo</label>
             <InputText @bind-Value="Title" class="form-control" id="txtTitle" />
+            <ValidationMessage For="() => Title" />
         </div>
 
         <div class="form-group">
@@ -26,8 +25,9 @@
         <div class="form-group">
             <label for="map">Posizione</label>
             <div class="map-element" @ref="mapElement" id="map"></div>
+            <ValidationMessage For="() => Latitude" />
         </div>
-        <button type="submit" class="btn btn-primary">Salva</button>
+        <button type="submit" class="btn btn-primary mt-3">Salva</button>
     </EditForm>
     <hr />
     Latitude: @Latitude<br />
@@ -47,8 +47,30 @@
     private double? Latitude { get; set; }
     private double? Longitude { get; set; }
     private IBrowserFile? Image { get; set; }
+    [Required]
+    [StringLength(250)]
     public string Title { get; set; }
 
+    private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+
+
+    protected override void OnInitialized()
+    {
+        editContext = new(this);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new(editContext);
+    }
+
+    private void HandleValidationRequested(object? sender, ValidationRequestedEventArgs args)
+    {
+        messageStore?.Clear();
+
+        if (Latitude == null || Longitude == null)
+        {
+            messageStore?.Add(() => Latitude, "Posizione non selezionata.");
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -73,7 +95,6 @@
         Image = e.File;
     }
 
-
     private async Task Save()
     {
         var model = new BuildingSiteInsertModel();
@@ -92,21 +113,27 @@
         }
         var result = await ApiProxy.InsertBuildingSiteAsync(model);
 
-        await MessageBoxService.ShowAlertAsync("Inserimento", "Inserimento avvenuto con successo");
-
+        if (result)
+        {
+            await MessageBoxService.ShowAlertAsync("OK", "Inserimento nuovo cantiere avvenuto con successo");
+            Image = null;
+            Title = "";
+            Latitude = null;
+            Longitude = null;
+        }
+        else
+        {
+            await MessageBoxService.ShowAlertAsync("Error", "Errore durante l'inserimento del cantiere.");
+        }
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
         if (mapInstance is not null)
-        {
             await mapInstance.DisposeAsync();
-        }
 
         if (mapModule is not null)
-        {
             await mapModule.DisposeAsync();
-        }
 
         objRef?.Dispose();
     }

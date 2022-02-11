@@ -4,7 +4,7 @@
 
 
 
-<div @ref="modalElement" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div @ref="modalElement" class="modal fade" data-bs-backdrop="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -35,16 +35,11 @@
     </div>
 </div>
 
-
-
-
-
-
 @code {
     private string Title { get; set; } = "";
     private string Text { get; set; } = "";
     private MessageBoxType MessageBoxType { get; set; } = MessageBoxType.Alert;
-    private Func<bool, Task> ReturnCallback { get; set; }
+    private Func<bool, Task>? ReturnCallback { get; set; }
 
     private ElementReference modalElement;
     private IJSUnmarshalledObjectReference? module;
@@ -82,14 +77,10 @@
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
         if (modalInstance is not null)
-        {
             await modalInstance.DisposeAsync();
-        }
 
         if (module is not null)
-        {
             await module.DisposeAsync();
-        }
-
     }
+
 }
