@@ -1,0 +1,37 @@
+﻿@inherits LayoutComponentBase
+
+<SBAdminLayout 
+        Title="Umarell 2.0"
+        FooterText="Copyright &copy; Andrea Dottor 2022"
+        HomeUrl="./"
+        LogoutUrl="./Account/Logout"
+        Username="Andrea">
+    <SidenavItems>
+        <SidenavItemHeading Text="Main" />
+        <SidenavItem Text="Home" Href="" Match="NavLinkMatch.All" IconClass="oi oi-home" />
+        <SidenavItemHeading Text="Secondary" />
+        <SidenavItem Text="Counter" Href="counter" IconClass="oi oi-plus" />
+        <SidenavItem Text="Fetch data" Href="fetchdata" Match="NavLinkMatch.All" IconClass="oi oi-list-rich" />
+    </SidenavItems>
+    <PageContent>
+        @Body
+    </PageContent>
+
+</SBAdminLayout>
+
+@*<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+*@

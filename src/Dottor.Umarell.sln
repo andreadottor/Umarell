@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32203.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dottor.Umarell.Server", "Dottor.Umarell\Server\Dottor.Umarell.Server.csproj", "{BF96163F-A52B-4293-9D55-1127A8711E9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dottor.Umarell.Client", "Dottor.Umarell\Client\Dottor.Umarell.Client.csproj", "{FD3D1830-7097-4EB4-B85E-D2A57EEBC0A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dottor.Umarell.Shared", "Dottor.Umarell\Shared\Dottor.Umarell.Shared.csproj", "{09EEDF15-50B1-4651-97D0-E689F8A0F90B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dottor.Umarell.UI", "Dottor.Umarell.UI\Dottor.Umarell.UI.csproj", "{75AE6485-6297-4EC0-9C90-C5464E513067}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF96163F-A52B-4293-9D55-1127A8711E9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF96163F-A52B-4293-9D55-1127A8711E9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF96163F-A52B-4293-9D55-1127A8711E9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF96163F-A52B-4293-9D55-1127A8711E9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD3D1830-7097-4EB4-B85E-D2A57EEBC0A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD3D1830-7097-4EB4-B85E-D2A57EEBC0A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD3D1830-7097-4EB4-B85E-D2A57EEBC0A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD3D1830-7097-4EB4-B85E-D2A57EEBC0A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09EEDF15-50B1-4651-97D0-E689F8A0F90B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09EEDF15-50B1-4651-97D0-E689F8A0F90B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09EEDF15-50B1-4651-97D0-E689F8A0F90B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09EEDF15-50B1-4651-97D0-E689F8A0F90B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75AE6485-6297-4EC0-9C90-C5464E513067}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75AE6485-6297-4EC0-9C90-C5464E513067}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75AE6485-6297-4EC0-9C90-C5464E513067}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75AE6485-6297-4EC0-9C90-C5464E513067}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {875DEC87-9238-4C75-8998-18B6B85F90F2}
+	EndGlobalSection
+EndGlobal

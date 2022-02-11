@@ -1,0 +1,68 @@
+﻿@implements IAsyncDisposable
+
+@inject IJSRuntime JS
+
+<div class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="@HomeUrl">@Title</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+
+        <div class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            &nbsp;
+        </div>
+
+        <Navbar Username="@Username" LogoutUrl="@LogoutUrl" />
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <Sidenav SidenavFooter="@SidenavFooter">
+                @SidenavItems
+            </Sidenav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                @PageContent
+            </main>
+            <Footer Text="@FooterText">
+                @FooterContent
+            </Footer>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private IJSObjectReference? module;
+
+    [Parameter] public string? Title { get; set; } = "Sample title";
+    [Parameter] public string? HomeUrl { get; set; } = "./";
+    [Parameter] public string? FooterText { get; set; } = "Copyright &copy; 2022";
+
+    [Parameter] public string? Username { get; set; }
+    [Parameter] public string? LogoutUrl { get; set; }
+
+
+    [Parameter] public RenderFragment? PageContent { get; set; }
+    [Parameter] public RenderFragment? FooterContent { get; set; }
+    [Parameter] public RenderFragment? SidenavFooter { get; set; }
+    [Parameter] public RenderFragment? SidenavItems { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Dottor.Umarell.UI/js/SBAdmin.js");
+            await module.InvokeVoidAsync("appInit");
+        }
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+}

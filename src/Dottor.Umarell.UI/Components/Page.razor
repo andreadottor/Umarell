@@ -1,0 +1,9 @@
+﻿<div class="container-fluid px-4">
+    <h1 class="mt-4">@Title</h1>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}
