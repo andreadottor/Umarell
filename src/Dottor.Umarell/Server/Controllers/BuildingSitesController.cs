@@ -20,5 +20,12 @@
 
             return Ok(result);
         }
+
+        [HttpGet("Image/{buildingSiteId}")]
+        public async Task<IActionResult> Image(Guid buildingSiteId)
+        {
+            var image = System.IO.File.OpenRead("C:\\Users\\andre\\Pictures\\1618294733580.jfif");
+            return File(image, "image/jpeg");
+        }
     }
 }

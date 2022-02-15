@@ -1,8 +1,15 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Dottor.Umarell.Server.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<UmarellContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("SQLite");
+});
 
 builder.Services.AddAuthentication(x =>
     {

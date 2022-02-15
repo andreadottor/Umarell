@@ -1,6 +1,5 @@
 ﻿@page "/Insert"
-@using System.ComponentModel.DataAnnotations
-@implements IAsyncDisposable
+
 @attribute [Authorize]
 
 @inject IJSRuntime JS
@@ -11,47 +10,46 @@
 
     <EditForm EditContext="editContext" OnValidSubmit="Save">
         <DataAnnotationsValidator />
-        <div class="form-group">
+        <div class="form-group mt-3">
             <label for="txtTitle">Titolo</label>
-            <InputText @bind-Value="Title" class="form-control" id="txtTitle" />
+            <InputTextOnInput @bind-Value="Title" class="form-control" id="txtTitle" />
             <ValidationMessage For="() => Title" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group mt-3">
+            <label for="startDate">Data inizio</label>
+            <InputDate @bind-Value="@StartDate" class="form-control" id="startDate" />
+            <ValidationMessage For="() => StartDate" />
+        </div>
+
+        <div class="form-group mt-3">
             <label for="fileImage">Foto</label>
             <InputFile OnChange="@LoadFiles" class="form-control" id="fileImage" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group mt-3">
             <label for="map">Posizione</label>
-            <div class="map-element" @ref="mapElement" id="map"></div>
-            <ValidationMessage For="() => Latitude" />
+            <MapEditor @bind-Value="Position" Field="() => Position" id="map" />
+            <ValidationMessage For="() => Position" />
         </div>
-        <button type="submit" class="btn btn-primary mt-3">Salva</button>
+        <hr />
+        <FormSubmitButton>Salva</FormSubmitButton>
     </EditForm>
-    <hr />
-    Latitude: @Latitude<br />
-    Longitude: @Longitude<br />
-
 </Page>
 
 
 @code {
-    private ElementReference mapElement;
-    private IJSUnmarshalledObjectReference? mapModule;
-    private IJSObjectReference? mapInstance;
-    private DotNetObjectReference<Insert>? objRef;
 
-    private double? Latitude { get; set; }
-    private double? Longitude { get; set; }
-    private IBrowserFile? Image { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Il campo 'Titolo' è obbligaorio")]
     [StringLength(250)]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Il campo 'Data inizio' è obbligatorio")]
+    public DateTime? StartDate { get; set; }
+    private IBrowserFile? Image { get; set; }
+    public Coordinate Position { get; set; } = Coordinate.Empty;
 
     private EditContext? editContext;
     private ValidationMessageStore? messageStore;
-
 
     protected override void OnInitialized()
     {
@@ -64,28 +62,8 @@
     {
         messageStore?.Clear();
 
-        if (Latitude == null || Longitude == null)
-        {
-            messageStore?.Add(() => Latitude, "Posizione non selezionata.");
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            objRef = DotNetObjectReference.Create(this);
-            mapModule = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", "./Pages/Insert.razor.js");
-            mapInstance = await mapModule.InvokeAsync<IJSObjectReference>("initMap", mapElement, objRef);
-        }
-    }
-
-    [JSInvokable]
-    public void SetMarker(double lat, double lon)
-    {
-        Latitude = lat;
-        Longitude = lon;
-        StateHasChanged();
+        if (Position == Coordinate.Empty)
+            messageStore?.Add(() => Position, "Il campo 'Posizione' è obbligatorio");
     }
 
     private void LoadFiles(InputFileChangeEventArgs e)
@@ -97,27 +75,33 @@
     {
         var model = new BuildingSiteInsertModel();
         model.Title = Title;
-        model.Latitude = Latitude.Value;
-        model.Longitude = Longitude.Value;
+        model.Latitude = Position.Latitude;
+        model.Longitude = Position.Longitude;
+        model.StartDate = StartDate.Value;
 
         if (Image != null)
         {
-            using Stream stream = Image.OpenReadStream();
-            using MemoryStream ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
+            try
+            {
+                using Stream stream = Image.OpenReadStream();
+                using MemoryStream ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
 
-            model.FileName = Image.Name;
-            model.FileContent = ms.ToArray();
+                model.FileName = Image.Name;
+                model.FileContent = ms.ToArray();
+            }
+            catch (IOException ex)
+            {
+                await MessageBoxService.ShowAlertAsync("Error", ex.Message);
+                return;
+            }
         }
         var result = await ApiProxy.InsertBuildingSiteAsync(model);
 
         if (result)
         {
             await MessageBoxService.ShowAlertAsync("OK", "Inserimento nuovo cantiere avvenuto con successo");
-            Image = null;
-            Title = "";
-            Latitude = null;
-            Longitude = null;
+            Clear();
         }
         else
         {
@@ -125,14 +109,12 @@
         }
     }
 
-    async ValueTask IAsyncDisposable.DisposeAsync()
+    private void Clear()
     {
-        if (mapInstance is not null)
-            await mapInstance.DisposeAsync();
-
-        if (mapModule is not null)
-            await mapModule.DisposeAsync();
-
-        objRef?.Dispose();
+        Image = null;
+        Title = string.Empty;
+        Position = Coordinate.Empty;
+        StartDate = null;
     }
+
 }

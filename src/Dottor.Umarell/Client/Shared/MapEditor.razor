@@ -1,0 +1,63 @@
+﻿@implements IAsyncDisposable
+@using System.Linq.Expressions
+
+@inject IJSRuntime JS
+
+<div class="map-element" @ref="mapElement" @attributes="Attributes"></div>
+
+Latitude: <em>@Value.Latitude</em>;
+Longitude: <em>@Value.Longitude</em>
+
+@code {
+    [CascadingParameter] public EditContext Context { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> Attributes { get; set; }
+
+    [Parameter] public Expression<Func<Coordinate>> Field { get; set; }
+    [Parameter] public Coordinate Value { get; set; } = Coordinate.Empty;
+    [Parameter] public EventCallback<Coordinate> ValueChanged { get; set; }
+
+    private ElementReference mapElement;
+    private IJSUnmarshalledObjectReference? mapModule;
+    private IJSObjectReference? mapInstance;
+    private DotNetObjectReference<MapEditor>? objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            mapModule = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", $"./Shared/MapEditor.razor.js?v={Utilities.GetVersion()}");
+            mapInstance = await mapModule.InvokeAsync<IJSObjectReference>("initMap", mapElement, objRef);
+        }
+    }
+
+    [JSInvokable]
+    public async Task SetMarker(double lat, double lon)
+    {
+        Value = new Coordinate(lat, lon);
+        await ValueChanged.InvokeAsync(Value);
+
+        StateHasChanged();
+        NotifyChanged();
+    }
+
+    private void NotifyChanged()
+    {
+        if (Context != null)
+        {
+            Context.NotifyFieldChanged(FieldIdentifier.Create(Field));
+        }
+    }
+
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (mapInstance is not null)
+            await mapInstance.DisposeAsync();
+
+        if (mapModule is not null)
+            await mapModule.DisposeAsync();
+
+        objRef?.Dispose();
+    }
+}

@@ -4,6 +4,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,6 +19,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Dottor.Umarell.UI\Dottor.Umarell.UI.csproj" />
 		<ProjectReference Include="..\Shared\Dottor.Umarell.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Components\" />
 	</ItemGroup>
 
 </Project>

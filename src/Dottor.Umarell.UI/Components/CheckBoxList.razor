@@ -1,0 +1,78 @@
+﻿@using System.Linq.Expressions
+
+@typeparam TItem
+@typeparam TKey
+
+@if (Data != null)
+{
+    foreach (var item in Data)
+    {
+        var Text = TextField.Invoke(item);
+        var Value = ValueField.Invoke(item);
+        bool Checked = false;
+        if (SelectedValues.Contains(Value))
+        {
+            Checked = true;
+        }
+        <div class="form-check" style="@Style">
+            <input type="checkbox" 
+                    checked="@Checked" 
+                    class="form-check-input" 
+                    id="tag-@Value.ToString()"
+                    @onchange="e => { CheckboxClicked(Value, e?.Value); }" />
+
+            <label class="form-check-label" for="tag-@Value.ToString()">
+                @Text
+            </label>
+        </div>
+
+    }
+}
+@ChildContent
+
+
+@code {
+    //Data for the Checkbox
+    [Parameter] public IEnumerable<TItem> Data { get; set; }
+    // The field to be shown adjacent to checkbox
+    [Parameter] public Func<TItem, string> TextField { get; set; }
+    // The Value which checkbox will return when checked
+    [Parameter] public Func<TItem, TKey> ValueField { get; set; }
+    // CSS Style for the Checkbox container
+    [Parameter] public string Style { get; set; }
+
+    // Any childd content for the control (if needed)
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    // The array which contains the list of selected checkboxs
+    [Parameter] public IList<TKey> SelectedValues { get; set; }
+
+    [CascadingParameter] public EditContext Context { get; set; }
+
+    [Parameter] public Expression<Func<IEnumerable<TKey>>> Field { get; set; }
+
+    //Method to update the selected value on click on checkbox
+    protected void CheckboxClicked(TKey aSelectedId, object? aChecked)
+    {
+        if (aChecked != null && Convert.ToBoolean(aChecked))
+        {
+            if (!SelectedValues.Contains(aSelectedId))
+            {
+                SelectedValues.Add(aSelectedId);
+            }
+        }
+        else
+        {
+            if (SelectedValues.Contains(aSelectedId))
+            {
+                SelectedValues.Remove(aSelectedId);
+            }
+        }
+
+        if (Context != null)
+        {
+            FieldIdentifier fieldIdentifier = FieldIdentifier.Create(Field);
+            Context.NotifyFieldChanged(fieldIdentifier);
+        }
+        StateHasChanged();
+    }
+}  

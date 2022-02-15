@@ -1,0 +1,65 @@
+﻿@implements IAsyncDisposable
+@using System.Linq.Expressions
+
+@inject IJSRuntime JS
+
+<div class="map-element" @ref="mapElement" @attributes="Attributes"></div>
+
+<div @ref="marketInfoElement" style="display: none;">
+    @if(selectedItem != null)
+    {
+        <h2>@selectedItem.Title</h2>
+        <img src="/api/v1/BuildingSites/image/@selectedItem.Id" />
+    }
+    else
+    {
+        <span>Cantiere non valido</span>
+    }
+
+</div>
+
+
+@code {
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> Attributes { get; set; }
+
+    [Parameter] public IEnumerable<BuildingSiteModel> Items { get; set; }
+
+    private ElementReference mapElement;
+    private ElementReference marketInfoElement;
+    private IJSUnmarshalledObjectReference? mapModule;
+    private IJSObjectReference? mapInstance;
+    private DotNetObjectReference<MapDisplay>? objRef;
+
+
+    private BuildingSiteModel? selectedItem = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            mapModule = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", $"./Shared/MapDisplay.razor.js?v={Utilities.GetVersion()}");
+            mapInstance = await mapModule.InvokeAsync<IJSObjectReference>("initMap", mapElement, Items, objRef);
+        }
+    }
+
+    [JSInvokable]
+    public ElementReference SetMarkerInfo(Guid buildingSiteId)
+    {
+        selectedItem = Items.First(x => x.Id == buildingSiteId);
+
+        StateHasChanged();
+        return marketInfoElement;
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (mapInstance is not null)
+            await mapInstance.DisposeAsync();
+
+        if (mapModule is not null)
+            await mapModule.DisposeAsync();
+
+        objRef?.Dispose();
+    }
+}
