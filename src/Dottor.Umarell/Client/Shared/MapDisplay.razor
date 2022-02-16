@@ -13,7 +13,17 @@
             Data di inizio lavori: 
             <strong>@selectedItem.StartDate.ToString("dd MMMM yyyy")</strong>
         </p>
-        <img src="/api/v1/BuildingSites/image/@selectedItem.Id" width="300" />
+        @if (!string.IsNullOrWhiteSpace(selectedItem.FileName))
+        {
+            <img src="/api/v1/BuildingSites/image/@selectedItem.Id" alt="@selectedItem.FileName" style="width: 100%;" />
+        }
+        else
+        {
+            <div class="text-center">
+                <img src="/images/umarell_logo.png" alt="umarell logo" width="50" />
+                <h5>Immagine non caricata</h5>
+            </div>
+        }
     }
     else
     {

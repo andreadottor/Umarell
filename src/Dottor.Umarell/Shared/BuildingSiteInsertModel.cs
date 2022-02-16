@@ -8,8 +8,8 @@
 
         public DateTime StartDate { get; set; }
 
-        public string FileName { get; set; }
-        public byte[] FileContent { get; set; }
+        public string? FileName { get; set; }
+        public byte[]? FileContent { get; set; }
 
         public double Latitude { get; set; }
         public double Longitude { get; set; }
