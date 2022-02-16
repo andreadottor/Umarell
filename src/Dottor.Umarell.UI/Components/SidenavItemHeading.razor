@@ -2,4 +2,9 @@
 
 @code {
     [Parameter] public string? Text { get; set; }
+
+    protected override bool ShouldRender()
+    {
+        return false;
+    }
 }

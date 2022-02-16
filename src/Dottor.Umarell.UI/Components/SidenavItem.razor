@@ -11,4 +11,9 @@
     [Parameter] public string? Text { get; set; }
     [Parameter] public string? IconClass { get; set; }
     [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
+
+    protected override bool ShouldRender()
+    {
+        return false;
+    }
 }

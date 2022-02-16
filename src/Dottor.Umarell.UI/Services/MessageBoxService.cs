@@ -14,7 +14,6 @@
 
     public class MessageBoxService : IMessageBoxService
     {
-        //public event MessageBoxShowHandler? MessageBoxShowInvoked;
         public event EventHandler<MessageBoxShowEventArgs>? MessageBoxShow;
 
         public Task ShowAlertAsync(string title, string text)

@@ -18,8 +18,11 @@ builder.Services.AddAuthentication(x =>
     {
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.SlidingExpiration = true;
+        options.Cookie.Name = ".Umarell.Auth";
         options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.HttpOnly = true;
+        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     });
 
 builder.Services.AddControllersWithViews();
