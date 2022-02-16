@@ -4,6 +4,8 @@
 
     public class UmarellContext : DbContext
     {
+        public UmarellContext(DbContextOptions<UmarellContext> options)
+           : base(options) { }
 
         public DbSet<BuildingSite> BuildingSites { get; set; }
 

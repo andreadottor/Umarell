@@ -83,7 +83,7 @@
         {
             try
             {
-                using Stream stream = Image.OpenReadStream();
+                using Stream stream = Image.OpenReadStream(1024000 * 3);
                 using MemoryStream ms = new MemoryStream();
                 await stream.CopyToAsync(ms);
 

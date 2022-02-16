@@ -9,13 +9,16 @@
     @if(selectedItem != null)
     {
         <h2>@selectedItem.Title</h2>
-        <img src="/api/v1/BuildingSites/image/@selectedItem.Id" />
+        <p>
+            Data di inizio lavori: 
+            <strong>@selectedItem.StartDate.ToString("dd MMMM yyyy")</strong>
+        </p>
+        <img src="/api/v1/BuildingSites/image/@selectedItem.Id" width="300" />
     }
     else
     {
         <span>Cantiere non valido</span>
     }
-
 </div>
 
 
@@ -29,7 +32,6 @@
     private IJSUnmarshalledObjectReference? mapModule;
     private IJSObjectReference? mapInstance;
     private DotNetObjectReference<MapDisplay>? objRef;
-
 
     private BuildingSiteModel? selectedItem = null;
 

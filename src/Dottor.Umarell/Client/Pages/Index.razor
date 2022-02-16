@@ -1,6 +1,8 @@
 ﻿@page "/"
 @attribute [Authorize]
 
+@inject ApiProxyService ApiProxy
+
 <Page Title="Elenco cantieri segnalati">
     
     @if(items != null)
@@ -15,27 +17,9 @@
 @code {
     private IEnumerable<BuildingSiteModel> items;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        var list = new List<BuildingSiteModel>();
-        list.Add(new BuildingSiteModel()
-        {
-            Id = Guid.NewGuid(),
-            Latitude = 45.8851534,
-            Longitude = 12.3373920,
-            Title = "test 1"
-        });
-        list.Add(new BuildingSiteModel()
-        {
-            Id = Guid.NewGuid(),
-            Latitude = 45.8855534,
-            Longitude = 12.3343940,
-            Title = "test 2"
-        });
-
-        items = list;
-
-        return Task.CompletedTask;
+        items = await ApiProxy.GetAllBuildingSiteAsync();
     }
 
 }
