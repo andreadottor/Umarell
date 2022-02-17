@@ -12,12 +12,6 @@
     });
 
     var styleArray = [
-        //{
-        //    featureType: "all",
-        //    stylers: [
-        //        { visibility: "off" }
-        //    ]
-        //},
         {
             featureType: "poi.business",
             stylers: [

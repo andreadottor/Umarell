@@ -5,7 +5,7 @@
 
 <div class="map-element" @ref="mapElement" @attributes="Attributes"></div>
 
-<div @ref="marketInfoElement" style="display: none;">
+<div @ref="markerInfoElement" style="display: none;">
     @if(selectedItem != null)
     {
         <h2>@selectedItem.Title</h2>
@@ -31,14 +31,23 @@
     }
 </div>
 
+<div @ref="markerNoInfoElement" style="display: none;">
+    <div class="text-center">
+        <img src="/images/umarell_logo.png" alt="umarell logo" width="50" />
+        <p>Ops, qualcosa è andato storto...</p>
+    </div>
+</div>
 
 @code {
-    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> Attributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] 
+    public IReadOnlyDictionary<string, object>? Attributes { get; set; }
 
-    [Parameter] public IEnumerable<BuildingSiteModel> Items { get; set; }
+    [Parameter] 
+    public IEnumerable<BuildingSiteModel>? Items { get; set; }
 
     private ElementReference mapElement;
-    private ElementReference marketInfoElement;
+    private ElementReference markerInfoElement;
+    private ElementReference markerNoInfoElement;
     private IJSUnmarshalledObjectReference? mapModule;
     private IJSObjectReference? mapInstance;
     private DotNetObjectReference<MapDisplay>? objRef;
@@ -58,10 +67,12 @@
     [JSInvokable]
     public ElementReference SetMarkerInfo(Guid buildingSiteId)
     {
-        selectedItem = Items.First(x => x.Id == buildingSiteId);
+        selectedItem = Items?.First(x => x.Id == buildingSiteId);
+        if (selectedItem == null)
+            return markerNoInfoElement;
 
         StateHasChanged();
-        return marketInfoElement;
+        return markerInfoElement;
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()

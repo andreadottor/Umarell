@@ -43,10 +43,7 @@ Longitude: <em>@Value.Longitude</em>
 
     private void NotifyChanged()
     {
-        if (Context != null)
-        {
-            Context.NotifyFieldChanged(FieldIdentifier.Create(Field));
-        }
+        Context?.NotifyFieldChanged(FieldIdentifier.Create(Field));
     }
 
 
