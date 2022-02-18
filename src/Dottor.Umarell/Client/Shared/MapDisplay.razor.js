@@ -1,9 +1,9 @@
-﻿export function initMap(cotainer, items, callback) {
+﻿export function initMap(container, items, callback) {
     var markers = [];
 
     // inizializzazione mappa
     //
-    var map = new google.maps.Map(cotainer, {
+    var map = new google.maps.Map(container, {
         zoom: 18,
         center: new google.maps.LatLng(45.8851534, 12.3373920),
         mapTypeId: google.maps.MapTypeId.ROADMAP,

@@ -8,7 +8,7 @@
 
 <Page Title="Inserimento nuovo cantiere">
 
-    <EditForm EditContext="editContext" OnValidSubmit="Save">
+    <EditForm EditContext="EditContext" OnValidSubmit="Save">
         <DataAnnotationsValidator />
         <div class="form-group mt-3">
             <label for="txtTitle">Titolo</label>
@@ -29,11 +29,12 @@
 
         <div class="form-group mt-3">
             <label for="map">Posizione</label>
-            <MapEditor @bind-Value="Position" Field="() => Position" id="map" />
+            <MapEditor @bind-Value="Position" id="map" />
             <ValidationMessage For="() => Position" />
         </div>
         <hr />
         <FormSubmitButton>Salva</FormSubmitButton>
+        <button type="button" class="btn btn-secondary" @onclick="Clear">Clear</button>
     </EditForm>
 </Page>
 
@@ -44,26 +45,29 @@
     [StringLength(250)]
     public string Title { get; set; } = string.Empty;
     [Required(ErrorMessage = "Il campo 'Data inizio' è obbligatorio")]
-    public DateTime? StartDate { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.Today;
     private IBrowserFile? Image { get; set; }
     public Coordinate Position { get; set; } = Coordinate.Empty;
 
-    private EditContext? editContext;
-    private ValidationMessageStore? messageStore;
+    private EditContext? EditContext { get; set; } = default!;
+    private ValidationMessageStore? MessageStore { get; set; }
 
     protected override void OnInitialized()
     {
-        editContext = new(this);
-        editContext.OnValidationRequested += HandleValidationRequested;
-        messageStore = new(editContext);
+        EditContext = new(this);
+        EditContext.OnValidationRequested += HandleValidationRequested;
+        MessageStore = new(EditContext);
     }
 
     private void HandleValidationRequested(object? sender, ValidationRequestedEventArgs args)
     {
-        messageStore?.Clear();
+        if (MessageStore is not null)
+        {
+            MessageStore.Clear();
 
-        if (Position == Coordinate.Empty)
-            messageStore?.Add(() => Position, "Il campo 'Posizione' è obbligatorio");
+            if (Position == Coordinate.Empty)
+                MessageStore.Add(() => Position, "Il campo 'Posizione' è obbligatorio");
+        }
     }
 
     private void LoadFiles(InputFileChangeEventArgs e)
@@ -77,7 +81,7 @@
         model.Title = Title;
         model.Latitude = Position.Latitude;
         model.Longitude = Position.Longitude;
-        model.StartDate = StartDate.Value;
+        model.StartDate = StartDate;
 
         if (Image != null)
         {
@@ -114,7 +118,7 @@
         Image = null;
         Title = string.Empty;
         Position = Coordinate.Empty;
-        StartDate = null;
+        StartDate = DateTime.Today;
     }
 
 }

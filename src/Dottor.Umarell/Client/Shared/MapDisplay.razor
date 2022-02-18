@@ -3,19 +3,19 @@
 
 @inject IJSRuntime JS
 
-<div class="map-element" @ref="mapElement" @attributes="Attributes"></div>
+<div class="map-element" @ref="_mapElement" @attributes="Attributes"></div>
 
-<div @ref="markerInfoElement" style="display: none;">
-    @if(selectedItem != null)
+<div @ref="_markerInfoElement" style="display: none;">
+    @if(SelectedItem != null)
     {
-        <h2>@selectedItem.Title</h2>
+        <h2>@SelectedItem.Title</h2>
         <p>
             Data di inizio lavori: 
-            <strong>@selectedItem.StartDate.ToString("dd MMMM yyyy")</strong>
+            <strong>@SelectedItem.StartDate.ToString("dd MMMM yyyy")</strong>
         </p>
-        @if (!string.IsNullOrWhiteSpace(selectedItem.FileName))
+        @if (!string.IsNullOrWhiteSpace(SelectedItem.FileName))
         {
-            <img src="/api/v1/BuildingSites/image/@selectedItem.Id" alt="@selectedItem.FileName" style="width: 100%;" />
+            <img src="/api/v1/BuildingSites/image/@SelectedItem.Id" alt="@SelectedItem.FileName" style="width: 100%;" />
         }
         else
         {
@@ -31,7 +31,7 @@
     }
 </div>
 
-<div @ref="markerNoInfoElement" style="display: none;">
+<div @ref="_markerNoInfoElement" style="display: none;">
     <div class="text-center">
         <img src="/images/umarell_logo.png" alt="umarell logo" width="50" />
         <p>Ops, qualcosa è andato storto...</p>
@@ -39,50 +39,48 @@
 </div>
 
 @code {
-    [Parameter(CaptureUnmatchedValues = true)] 
-    public IReadOnlyDictionary<string, object>? Attributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]  public IReadOnlyDictionary<string, object>? Attributes { get; set; }
+    [Parameter] public IEnumerable<BuildingSiteModel>? Items { get; set; }
+    
+    private BuildingSiteModel? SelectedItem { get; set; }
 
-    [Parameter] 
-    public IEnumerable<BuildingSiteModel>? Items { get; set; }
+    private ElementReference _mapElement;
+    private ElementReference _markerInfoElement;
+    private ElementReference _markerNoInfoElement;
+    private IJSObjectReference? _mapModule;
+    private IJSObjectReference? _mapInstance;
+    private DotNetObjectReference<MapDisplay>? _objRef;
 
-    private ElementReference mapElement;
-    private ElementReference markerInfoElement;
-    private ElementReference markerNoInfoElement;
-    private IJSUnmarshalledObjectReference? mapModule;
-    private IJSObjectReference? mapInstance;
-    private DotNetObjectReference<MapDisplay>? objRef;
-
-    private BuildingSiteModel? selectedItem = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            objRef = DotNetObjectReference.Create(this);
-            mapModule = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", $"./Shared/MapDisplay.razor.js?v={Utilities.GetVersion()}");
-            mapInstance = await mapModule.InvokeAsync<IJSObjectReference>("initMap", mapElement, Items, objRef);
+            _objRef = DotNetObjectReference.Create(this);
+            _mapModule = await JS.InvokeAsync<IJSObjectReference>("import", $"./Shared/MapDisplay.razor.js?v={Utilities.GetVersion()}");
+            _mapInstance = await _mapModule.InvokeAsync<IJSObjectReference>("initMap", _mapElement, Items, _objRef);
         }
     }
 
     [JSInvokable]
     public ElementReference SetMarkerInfo(Guid buildingSiteId)
     {
-        selectedItem = Items?.First(x => x.Id == buildingSiteId);
-        if (selectedItem == null)
-            return markerNoInfoElement;
+        SelectedItem = Items?.First(x => x.Id == buildingSiteId);
+        if (SelectedItem == null)
+            return _markerNoInfoElement;
 
         StateHasChanged();
-        return markerInfoElement;
+        return _markerInfoElement;
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        if (mapInstance is not null)
-            await mapInstance.DisposeAsync();
+        if (_mapInstance is not null)
+            await _mapInstance.DisposeAsync();
 
-        if (mapModule is not null)
-            await mapModule.DisposeAsync();
+        if (_mapModule is not null)
+            await _mapModule.DisposeAsync();
 
-        objRef?.Dispose();
+        _objRef?.Dispose();
     }
 }
