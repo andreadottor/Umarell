@@ -83,7 +83,7 @@
         model.Longitude = Position.Longitude;
         model.StartDate = StartDate;
 
-        if (Image != null)
+        if (Image is not null)
         {
             try
             {
@@ -119,6 +119,7 @@
         Title = string.Empty;
         Position = Coordinate.Empty;
         StartDate = DateTime.Today;
+        StateHasChanged();
     }
 
 }

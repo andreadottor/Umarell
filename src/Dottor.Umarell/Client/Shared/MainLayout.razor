@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthenticationStateProvider AuthenticationState
+
 <SBAdminLayout 
         Title="Umarell 2.0"
         FooterText="Copyright &copy; Andrea Dottor 2022"
@@ -21,13 +22,12 @@
 <MessageBox />
 
 @code {
-    private string Username { get; set; } = "";
+    private string? Username { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState.GetAuthenticationStateAsync();
-        Username = authState.User.Identity.Name;
-        StateHasChanged();
+        Username = authState?.User?.Identity?.Name;
     }
 
 }

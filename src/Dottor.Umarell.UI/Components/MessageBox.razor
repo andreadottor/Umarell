@@ -58,7 +58,7 @@
             };
     }
 
-    private async ValueTask Callback(bool result)
+    private async Task Callback(bool result)
     {
         if(_module is not null)
             await _module.InvokeVoidAsync("hide", _modalInstance);
