@@ -83,7 +83,15 @@
     [JSInvokable]
     public async Task MarkerInfoButtonClick(Guid buildingSiteId, string action)
     {
-        await MessageBoxService.ShowAlertAsync("ButtonClick", $"Hai premuto '{action}' su '{buildingSiteId}'");
+        if (action == "delete")
+        {
+            var canDelete =  await MessageBoxService.ShowConfirmAsync("Delete", $"Sicuro di voler cancellare?");
+            await MessageBoxService.ShowAlertAsync("Delete", $"Hai risposto: '{canDelete}'.");
+        }
+        else
+        {
+            await MessageBoxService.ShowAlertAsync("ButtonClick", $"Hai premuto '{action}' su '{buildingSiteId}'");
+        }
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()

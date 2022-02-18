@@ -12,7 +12,7 @@
 
     // funzione di creazione/posizionamento marker
     //
-    var placeMarker = function (location) {
+    var placeMarker = (location) => {
         if (marker) {
             marker.setMap(map);
             marker.setPosition(location);
@@ -31,7 +31,7 @@
     }
     // rimango in ascolto del click sulla mappa per recuperare le coordinate
     //
-    google.maps.event.addListener(map, 'click', function (event) {
+    google.maps.event.addListener(map, 'click', (event) => {
         placeMarker(event.latLng);
     });
 

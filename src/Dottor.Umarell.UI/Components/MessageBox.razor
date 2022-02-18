@@ -15,17 +15,17 @@
             <div class="modal-footer">
                 @if (MessageBoxType == MessageBoxType.Alert)
                 {
-                    <button type="button" class="btn btn-primary" @onclick="() => Callback(true)">
+                    <button type="button" class="btn btn-primary" @onclick="async () => await Callback(true)">
                         Ok
                     </button>
                 }
                 else if (MessageBoxType == MessageBoxType.Confirm)
                 {
-                    <button type="button" class="btn btn-primary" @onclick="() => Callback(true)">
+                    <button type="button" class="btn btn-primary" @onclick="async() => await Callback(true)">
                         Ok
                     </button>
 
-                    <button type="button" class="btn btn-secondary" @onclick="() => Callback(false)">
+                    <button type="button" class="btn btn-secondary" @onclick="async () => await Callback(false)">
                         Cancel
                     </button>
                 }
@@ -36,7 +36,7 @@
 
 @code {
     private ElementReference _modalElement;
-    private IJSUnmarshalledObjectReference? _module;
+    private IJSObjectReference? _module;
     private IJSObjectReference? _modalInstance;
 
     private string Title { get; set; } = "";
@@ -54,22 +54,25 @@
                 MessageBoxType = e.MessageBoxType;
                 ReturnCallback = e.ReturnCallback;
                 StateHasChanged();
-                _module?.InvokeVoid("show", _modalInstance);
+                _module?.InvokeVoidAsync("show", _modalInstance);
             };
     }
 
-    private void Callback(bool result)
+    private async ValueTask Callback(bool result)
     {
-        if (ReturnCallback != null)
-            ReturnCallback.Invoke(result);
-        _module?.InvokeVoid("hide", _modalInstance);
+        if(_module is not null)
+            await _module.InvokeVoidAsync("hide", _modalInstance);
+        // HACK: utile per permettere più MessageBox in sequenza
+        //
+        await Task.Delay(500);
+        ReturnCallback?.Invoke(result);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _module = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", "./_content/Dottor.Umarell.UI/Components/MessageBox.razor.js");
+            _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Dottor.Umarell.UI/Components/MessageBox.razor.js");
             _modalInstance = await _module.InvokeAsync<IJSObjectReference>("init", _modalElement);
         }
     }

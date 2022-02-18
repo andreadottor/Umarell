@@ -36,8 +36,8 @@
         bounds.extend(location);
         // gestione tooltip con le informazioni del cantiere
         //
-        google.maps.event.addListener(marker, "click", (function (id, marker, info) {
-            return function () {
+        google.maps.event.addListener(marker, "click", ((id, marker, info) => {
+            return () => {
                 info.close();
                 // chiamo il metodo Blazor che si occupa di valorizzare il tooltip
                 // con le info del cantiere selezionato
@@ -62,14 +62,14 @@
                         //
                         var buttons = clonedInfo.querySelectorAll("button");
                         if (buttons) {
-
                             buttons.forEach(button => {
                                 
                                 button.addEventListener("click", () => {
+                                    // notifico al codice blazor il pulsante che è stato premuto
+                                    //
                                     callback.invokeMethodAsync("MarkerInfoButtonClick", id, button.name);
                                 });
                             })
-
                         }
 
                     });
