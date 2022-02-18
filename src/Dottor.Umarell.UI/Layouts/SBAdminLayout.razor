@@ -34,15 +34,14 @@
 </div>
 
 @code {
-    private IJSObjectReference? module;
+    private IJSObjectReference? _module;
 
-    [Parameter] public string? Title { get; set; } = "Sample title";
-    [Parameter] public string? HomeUrl { get; set; } = "./";
-    [Parameter] public string? FooterText { get; set; } = "Copyright &copy; 2022";
+    [Parameter] public string Title { get; set; } = "Sample title";
+    [Parameter] public string HomeUrl { get; set; } = "/";
+    [Parameter] public string FooterText { get; set; } = "Copyright &copy; 2022";
 
     [Parameter] public string? Username { get; set; }
     [Parameter] public string? LogoutUrl { get; set; }
-
 
     [Parameter] public RenderFragment? PageContent { get; set; }
     [Parameter] public RenderFragment? FooterContent { get; set; }
@@ -53,16 +52,14 @@
     {
         if (firstRender)
         {
-            module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Dottor.Umarell.UI/js/SBAdmin.js");
-            await module.InvokeVoidAsync("appInit");
+            _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Dottor.Umarell.UI/js/SBAdmin.js");
+            await _module.InvokeVoidAsync("appInit");
         }
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        if (module is not null)
-        {
-            await module.DisposeAsync();
-        }
+        if (_module is not null)
+            await _module.DisposeAsync();
     }
 }

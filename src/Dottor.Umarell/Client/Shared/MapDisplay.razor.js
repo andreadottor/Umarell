@@ -54,9 +54,24 @@
                         info.open(map, marker);
                         // gestione chiusura tooltip
                         //
-                        google.maps.event.addListener(map, 'click', function () {
+                        google.maps.event.addListener(map, 'click', () => {
                             info.close();
                         });
+
+                        // gestione pulsanti
+                        //
+                        var buttons = clonedInfo.querySelectorAll("button");
+                        if (buttons) {
+
+                            buttons.forEach(button => {
+                                
+                                button.addEventListener("click", () => {
+                                    callback.invokeMethodAsync("MarkerInfoButtonClick", id, button.name);
+                                });
+                            })
+
+                        }
+
                     });
             }
         })(item.id, marker, infoWindow));

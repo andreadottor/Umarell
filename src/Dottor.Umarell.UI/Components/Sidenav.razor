@@ -1,16 +1,16 @@
-﻿ <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        @ChildContent
-                    </div>
-                </div>
-                @if (SidenavFooter != null)
-                {
-                    <div class="sb-sidenav-footer">
-                        @SidenavFooter
-                    </div>
-                }
-            </nav>
+﻿<nav class="sb-sidenav accordion sb-sidenav-dark">
+    <div class="sb-sidenav-menu">
+        <div class="nav">
+            @ChildContent
+        </div>
+    </div>
+    @if (SidenavFooter != null)
+    {
+        <div class="sb-sidenav-footer">
+            @SidenavFooter
+        </div>
+    }
+</nav>
 
 @code {
     [Parameter] public RenderFragment? SidenavFooter { get; set; }

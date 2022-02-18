@@ -2,15 +2,16 @@
 @using System.Linq.Expressions
 
 @inject IJSRuntime JS
+@inject IMessageBoxService MessageBoxService
 
 <div class="map-element" @ref="_mapElement" @attributes="Attributes"></div>
 
 <div @ref="_markerInfoElement" style="display: none;">
-    @if(SelectedItem != null)
+    @if (SelectedItem != null)
     {
         <h2>@SelectedItem.Title</h2>
         <p>
-            Data di inizio lavori: 
+            Data di inizio lavori:
             <strong>@SelectedItem.StartDate.ToString("dd MMMM yyyy")</strong>
         </p>
         @if (!string.IsNullOrWhiteSpace(SelectedItem.FileName))
@@ -24,6 +25,10 @@
                 <h5>Immagine non caricata</h5>
             </div>
         }
+        <div class="mt-3">
+            <button type="button" class="btn btn-secondary" name="edit">Edit</button>
+            <button type="button" class="btn btn-danger" name="delete">Delete</button>
+        </div>
     }
     else
     {
@@ -39,9 +44,9 @@
 </div>
 
 @code {
-    [Parameter(CaptureUnmatchedValues = true)]  public IReadOnlyDictionary<string, object>? Attributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? Attributes { get; set; }
     [Parameter] public IEnumerable<BuildingSiteModel>? Items { get; set; }
-    
+
     private BuildingSiteModel? SelectedItem { get; set; }
 
     private ElementReference _mapElement;
@@ -63,14 +68,22 @@
     }
 
     [JSInvokable]
-    public ElementReference SetMarkerInfo(Guid buildingSiteId)
+    public Task<ElementReference> SetMarkerInfo(Guid buildingSiteId)
     {
-        SelectedItem = Items?.First(x => x.Id == buildingSiteId);
-        if (SelectedItem == null)
-            return _markerNoInfoElement;
+        ElementReference result = _markerNoInfoElement;
+
+        SelectedItem = Items?.FirstOrDefault(x => x.Id == buildingSiteId);
+        if (SelectedItem != null)
+            result = _markerInfoElement;
 
         StateHasChanged();
-        return _markerInfoElement;
+        return Task.FromResult(result);
+    }
+
+    [JSInvokable]
+    public async Task MarkerInfoButtonClick(Guid buildingSiteId, string action)
+    {
+        await MessageBoxService.ShowAlertAsync("ButtonClick", $"Hai premuto '{action}' su '{buildingSiteId}'");
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()

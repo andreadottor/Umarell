@@ -1,14 +1,13 @@
 ﻿@implements IAsyncDisposable
+
 @inject IMessageBoxService MessageBoxService
 @inject IJSRuntime JS
 
-
-
-<div @ref="modalElement" class="modal fade" data-bs-backdrop="true" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div @ref="_modalElement" class="modal fade" data-bs-backdrop="true" tabindex="-1" aria-labelledby="messagebox" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">@Title</h5>
+                <h5 class="modal-title">@Title</h5>
             </div>
             <div class="modal-body">
                 @Text
@@ -26,7 +25,7 @@
                         Ok
                     </button>
 
-                    <button type="button" class="btn btn-primary" @onclick="() => Callback(false)">
+                    <button type="button" class="btn btn-secondary" @onclick="() => Callback(false)">
                         Cancel
                     </button>
                 }
@@ -36,14 +35,14 @@
 </div>
 
 @code {
+    private ElementReference _modalElement;
+    private IJSUnmarshalledObjectReference? _module;
+    private IJSObjectReference? _modalInstance;
+
     private string Title { get; set; } = "";
     private string Text { get; set; } = "";
     private MessageBoxType MessageBoxType { get; set; } = MessageBoxType.Alert;
     private Func<bool, Task>? ReturnCallback { get; set; }
-
-    private ElementReference modalElement;
-    private IJSUnmarshalledObjectReference? module;
-    private IJSObjectReference? modalInstance;
 
     protected override void OnInitialized()
     {
@@ -55,32 +54,33 @@
                 MessageBoxType = e.MessageBoxType;
                 ReturnCallback = e.ReturnCallback;
                 StateHasChanged();
-                module?.InvokeVoid("show", modalInstance);
+                _module?.InvokeVoid("show", _modalInstance);
             };
     }
 
     private void Callback(bool result)
     {
-        if (ReturnCallback != null) ReturnCallback.Invoke(result);
-        module?.InvokeVoid("hide", modalInstance);
+        if (ReturnCallback != null)
+            ReturnCallback.Invoke(result);
+        _module?.InvokeVoid("hide", _modalInstance);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            module = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", "../_content/Dottor.Umarell.UI/Components/MessageBox.razor.js");
-            modalInstance = await module.InvokeAsync<IJSObjectReference>("init", modalElement);
+            _module = await JS.InvokeAsync<IJSUnmarshalledObjectReference>("import", "./_content/Dottor.Umarell.UI/Components/MessageBox.razor.js");
+            _modalInstance = await _module.InvokeAsync<IJSObjectReference>("init", _modalElement);
         }
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        if (modalInstance is not null)
-            await modalInstance.DisposeAsync();
+        if (_modalInstance is not null)
+            await _modalInstance.DisposeAsync();
 
-        if (module is not null)
-            await module.DisposeAsync();
+        if (_module is not null)
+            await _module.DisposeAsync();
     }
 
 }
