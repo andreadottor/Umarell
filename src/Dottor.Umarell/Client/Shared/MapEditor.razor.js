@@ -14,6 +14,7 @@
     //
     var placeMarker = function (location) {
         if (marker) {
+            marker.setMap(map);
             marker.setPosition(location);
         } else {
             marker = new google.maps.Marker({

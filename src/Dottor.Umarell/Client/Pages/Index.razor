@@ -4,18 +4,14 @@
 @inject ApiProxyService ApiProxy
 
 <Page Title="Elenco cantieri segnalati">
-    
     @if(items != null)
     {
         <MapDisplay Items="items" />
     }
-
 </Page>
 
-
-
 @code {
-    private IEnumerable<BuildingSiteModel> items;
+    private IEnumerable<BuildingSiteModel>? items;
 
     protected override async Task OnInitializedAsync()
     {

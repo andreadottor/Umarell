@@ -5,7 +5,7 @@
         FooterText="Copyright &copy; Andrea Dottor 2022"
         HomeUrl="./"
         LogoutUrl="./Account/Logout"
-        Username="@_username">
+        Username="@Username">
     <SidenavItems>
         <SidenavItemHeading Text="Main" />
         <SidenavItem Text="Home" Href="" Match="NavLinkMatch.All" IconClass="oi oi-home" />
@@ -21,12 +21,13 @@
 <MessageBox />
 
 @code {
-    private string _username = "";
+    private string Username { get; set; } = "";
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationState.GetAuthenticationStateAsync();
-        _username = authState.User.Identity.Name;
+        Username = authState.User.Identity.Name;
+        StateHasChanged();
     }
 
 }

@@ -79,9 +79,9 @@ Longitude: <em>@Value.Longitude</em>
         if (_mapModule is not null)
         {
             if (Value == Coordinate.Empty)
-                await _mapModule.InvokeAsync<IJSObjectReference>("clearMarker", _mapInstance);
+                await _mapModule.InvokeVoidAsync("clearMarker", _mapInstance);
             else
-                await _mapModule.InvokeAsync<IJSObjectReference>("setMarker", _mapInstance, Value);
+                await _mapModule.InvokeVoidAsync("setMarker", _mapInstance, Value);
         }
     }
 
