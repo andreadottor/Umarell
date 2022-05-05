@@ -1,0 +1,62 @@
+﻿@implements IMarkerInfoComponent
+
+@inject IMessageBoxService MessageBoxService
+
+<div @ref="MarkerInfoElement" style="display: none;">
+    @if (SelectedItem is not null)
+    {
+        <h2>@SelectedItem.Title</h2>
+        <p>
+            Data di inizio lavori:
+            <strong>@SelectedItem.StartDate.ToString("dd MMMM yyyy")</strong>
+        </p>
+        @if (!string.IsNullOrWhiteSpace(SelectedItem.FileName))
+        {
+            <img src="/api/v1/BuildingSites/image/@SelectedItem.Id" alt="@SelectedItem.FileName" style="width: 100%;" />
+        }
+        else
+        {
+            <div class="text-center">
+                <img src="/images/umarell_logo.png" alt="umarell logo" width="50" />
+                <h5>Immagine non caricata</h5>
+            </div>
+        }
+        <div class="mt-3">
+            <button type="button" class="btn btn-secondary" name="edit">Edit</button>
+            <button type="button" class="btn btn-danger" name="delete">Delete</button>
+        </div>
+    }
+    else
+    {
+        <span>Cantiere non valido</span>
+    }
+</div>
+
+@code {
+    public BuildingSiteModel? SelectedItem { get; set; }
+    public ElementReference MarkerInfoElement { get; private set; }
+
+    [CascadingParameter]
+    public IMarkerInfoContainer? MapContainer { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (MapContainer is null)
+            throw new ApplicationException("MapMarkerInfo must be in a IMarkerInfoContainer component.");
+
+        MapContainer.SetMarkerInfoRef(this);
+    }
+
+    public async Task ButtonClickAsync(Guid buildingSiteId, string action)
+    {
+        if (action == "delete")
+        {
+            var canDelete = await MessageBoxService.ShowConfirmAsync("Delete", $"Sicuro di voler cancellare?");
+            await MessageBoxService.ShowAlertAsync("Delete", $"Hai risposto: '{canDelete}'.");
+        }
+        else
+        {
+            await MessageBoxService.ShowAlertAsync("ButtonClick", $"Hai premuto '{action}' su '{buildingSiteId}'");
+        }
+    }
+}

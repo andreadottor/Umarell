@@ -12,7 +12,6 @@
             _httpClient = httpClient;
         }
 
-
         public async ValueTask<bool> InsertBuildingSiteAsync(BuildingSiteInsertModel model)
         {
             var response = await _httpClient.PostAsJsonAsync($"api/v1/BuildingSites", model);

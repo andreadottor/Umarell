@@ -18,14 +18,17 @@
 
         private readonly IServiceProvider _serviceProvider;
 
-        public HostAuthenticationStateProvider(NavigationManager navigation, ILogger<HostAuthenticationStateProvider> logger, IServiceProvider serviceProvider)
+        public HostAuthenticationStateProvider(NavigationManager navigation, 
+                                               ILogger<HostAuthenticationStateProvider> logger, 
+                                               IServiceProvider serviceProvider)
         {
             _navigation = navigation;
             _logger = logger;
             _serviceProvider = serviceProvider;
         }
 
-        public override async Task<AuthenticationState> GetAuthenticationStateAsync() => new AuthenticationState(await GetUser(useCache: true));
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync() 
+            => new AuthenticationState(await GetUser(useCache: true));
 
         private async ValueTask<ClaimsPrincipal> GetUser(bool useCache = false)
         {
@@ -46,7 +49,7 @@
             using var scope = _serviceProvider.CreateScope();
             var httpClient = scope.ServiceProvider.GetRequiredService<HttpClient>();
 
-            UserInfo user = null;
+            UserInfo? user = null;
 
             try
             {
@@ -58,9 +61,7 @@
             }
 
             if (user == null || !user.IsAuthenticated)
-            {
                 return new ClaimsPrincipal(new ClaimsIdentity());
-            }
 
             var identity = new ClaimsIdentity(
                 nameof(HostAuthenticationStateProvider),

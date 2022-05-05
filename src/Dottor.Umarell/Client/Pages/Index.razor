@@ -6,7 +6,11 @@
 <Page Title="Elenco cantieri segnalati">
     @if(items != null)
     {
-        <MapDisplay Items="items" />
+        <MapDisplay Items="items">
+            <MarkerInfo>
+                <MapMarkerInfo />
+            </MarkerInfo>
+        </MapDisplay>
     }
 </Page>
 

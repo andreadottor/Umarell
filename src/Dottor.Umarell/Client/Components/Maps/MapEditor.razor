@@ -70,7 +70,7 @@ Longitude: <em>@Value.Longitude</em>
         if (firstRender)
         {
             _objRef = DotNetObjectReference.Create(this);
-            _mapModule = await JS.InvokeAsync<IJSObjectReference>("import", $"./Shared/MapEditor.razor.js?v={Utilities.GetVersion()}");
+            _mapModule = await JS.InvokeAsync<IJSObjectReference>("import", $"./Components/Maps/MapEditor.razor.js?v={Utilities.GetVersion()}");
             _mapInstance = await _mapModule.InvokeAsync<IJSObjectReference>("initMap", _mapElement, _objRef);
         }
 

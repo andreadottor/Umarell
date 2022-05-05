@@ -21,7 +21,6 @@ namespace Dottor.Umarell.Server.Pages.Account
             Input = new LoginFormModel("utente@umarell.dottor.net", "cantiere100%");
         }
 
-
         public async Task<IActionResult> OnPost(string? returnUrl)
         {
             ErrorMessage = string.Empty;
