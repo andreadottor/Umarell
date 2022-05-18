@@ -6,7 +6,7 @@
             labels: labels,
             datasets: [{
                 type: 'bar',
-                label: '# of Building site',
+                label: '# di cantieri',
                 data: list,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',

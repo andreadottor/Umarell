@@ -1,0 +1,75 @@
+﻿@page "/Exports"
+@attribute [Authorize]
+
+@inject ApiProxyService ApiProxy
+@inject IDownloadFileService DownloadService
+
+@using QuestPDF.Drawing
+@using QuestPDF.Fluent
+@using QuestPDF.Helpers
+@using QuestPDF.Infrastructure
+
+
+<Page Title="Exports">
+
+    <button @onclick="GeneratePdf">Download</button>
+
+</Page>
+
+
+@code {
+
+
+    private async Task GeneratePdf()
+    {
+        var list = await ApiProxy.GetAllBuildingSiteAsync();
+        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+        var resourceName = "Dottor.Umarell.Client.Font.Calibri Regular.ttf";
+
+        using Stream fontCalibri = assembly.GetManifestResourceStream(resourceName);
+        FontManager.RegisterFont(fontCalibri);
+
+        var content = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(2, Unit.Centimetre);
+                    page.DefaultTextStyle(x => x.FontSize(20));
+
+                    page.Header()
+                        .Text("Umarell 2.0")
+                        .SemiBold().FontSize(36).FontColor(Colors.Blue.Medium);
+
+                    page.Content()
+                        .PaddingVertical(1, Unit.Centimetre)
+                        .Column(x =>
+                        {
+                            x.Spacing(20);
+
+                            foreach (var item in list)
+                            {
+                                x.Item().Text(item.Title).ExtraBold();
+                                x.Item().Text($"Iniziato {item.StartDate.ToLongDateString()}").FontSize(10);
+                                x.Item().Text($"Coordiate: lat {item.Latitude} long {item.Longitude}").FontSize(10);
+                                x.Item().LineHorizontal(1);
+                                x.Spacing(10);
+                            }
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Pagina ");
+                            x.CurrentPageNumber();
+                        });
+                });
+            })
+            .GeneratePdf();
+
+        using Stream stream = new MemoryStream(content);
+        await DownloadService.DownloadFileFromStreamAsync(stream, $"Cantieri_{DateTime.Now.ToString("yyyyMMddHHmmss")}.pdf");
+    }
+
+}

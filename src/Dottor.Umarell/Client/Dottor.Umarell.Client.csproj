@@ -9,10 +9,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
+	  <None Remove="Font\Calibri Regular.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Font\Calibri Regular.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.5" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+		<PackageReference Include="QuestPDF" Version="2022.5.0" />
+		<PackageReference Include="SkiaSharp.Views.Blazor" Version="2.88.0-preview.266" />
 		
 	</ItemGroup>
 
