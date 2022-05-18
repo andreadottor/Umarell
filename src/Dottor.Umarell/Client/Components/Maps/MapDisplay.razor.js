@@ -23,6 +23,7 @@
 
     const infoWindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
+
     items.forEach(item => {
         // creazione marker
         //
@@ -56,6 +57,7 @@
                         //
                         google.maps.event.addListener(map, 'click', () => {
                             info.close();
+                            clonedInfo.remove();
                         });
 
                         // gestione pulsanti

@@ -1,4 +1,5 @@
-﻿@implements IMarkerInfoComponent
+﻿@using Dottor.Blazor.UI.Exceptions
+@implements IMarkerInfoComponent
 
 @inject IMessageBoxService MessageBoxService
 
@@ -42,7 +43,7 @@
     protected override void OnInitialized()
     {
         if (MapContainer is null)
-            throw new ApplicationException("MapMarkerInfo must be in a IMarkerInfoContainer component.");
+            throw new WrongParentException(typeof(MapMarkerInfo), typeof(IMarkerInfoContainer));
 
         MapContainer.SetMarkerInfoRef(this);
     }

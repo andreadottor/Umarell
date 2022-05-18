@@ -1,4 +1,4 @@
-﻿namespace Dottor.Umarell.UI.Services
+﻿namespace Dottor.Blazor.UI.Services
 {
     public record MessageBoxShowEventArgs(string Title, string Text, MessageBoxType MessageBoxType, Func<bool, Task> ReturnCallback);
 

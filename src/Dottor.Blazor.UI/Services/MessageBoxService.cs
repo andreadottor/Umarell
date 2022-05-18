@@ -1,8 +1,7 @@
-﻿namespace Dottor.Umarell.UI.Services
+﻿namespace Dottor.Blazor.UI.Services
 {
     using System;
     using System.Threading.Tasks;
-
 
     public class MessageBoxService : IMessageBoxService
     {

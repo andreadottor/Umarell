@@ -3,7 +3,7 @@
 
 @using System.Linq.Expressions
 
-@inject IJSRuntime JS
+@inject IJSInProcessRuntime JS
 @inject IMessageBoxService MessageBoxService
 
 <div class="map-element" @ref="_mapElement" @attributes="Attributes"></div>
@@ -24,9 +24,10 @@
     [Parameter] public RenderFragment? MarkerInfo { get; set; }
     [Parameter] public IEnumerable<BuildingSiteModel>? Items { get; set; }
 
+    private ElementReference _markerNoInfoElement;
     private ElementReference _mapElement;
-    private IJSObjectReference? _mapModule;
-    private IJSObjectReference? _mapInstance;
+    private IJSInProcessObjectReference? _mapModule;
+    private IJSInProcessObjectReference? _mapInstance;
     private DotNetObjectReference<MapDisplay>? _objRef;
 
     private IMarkerInfoComponent _markerInfoComponent;
@@ -36,8 +37,8 @@
         if (firstRender)
         {
             _objRef = DotNetObjectReference.Create(this);
-            _mapModule = await JS.InvokeAsync<IJSObjectReference>("import", $"./Components/Maps/MapDisplay.razor.js?v={Utilities.GetVersion()}");
-            _mapInstance = await _mapModule.InvokeAsync<IJSObjectReference>("initMap", _mapElement, Items, _objRef);
+            _mapModule = await JS.InvokeAsync<IJSInProcessObjectReference>("import", $"./Components/Maps/MapDisplay.razor.js?v={Utilities.GetVersion()}");
+            _mapInstance = _mapModule.Invoke<IJSInProcessObjectReference>("initMap", _mapElement, Items, _objRef);
         }
     }
 
@@ -49,17 +50,18 @@
     [JSInvokable]
     public Task<ElementReference> SetMarkerInfo(Guid buildingSiteId)
     {
-        ElementReference result = _markerNoInfoElement;
+        ElementReference markerRef = _markerNoInfoElement;
 
         var selectedBuildingSite = Items?.FirstOrDefault(x => x.Id == buildingSiteId);
-        if (selectedBuildingSite is not null)
+        if (selectedBuildingSite is not null && 
+            _markerInfoComponent is not null)
         {
             _markerInfoComponent.SelectedItem = selectedBuildingSite;
-            result = _markerInfoComponent.MarkerInfoElement;
+            markerRef = _markerInfoComponent.MarkerInfoElement;
         }
 
         StateHasChanged();
-        return Task.FromResult(result);
+        return Task.FromResult(markerRef);
     }
 
     [JSInvokable]

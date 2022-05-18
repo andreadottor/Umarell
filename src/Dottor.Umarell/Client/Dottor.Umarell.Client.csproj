@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Dottor.Umarell.UI\Dottor.Umarell.UI.csproj" />
+		<ProjectReference Include="..\..\Dottor.Blazor.UI\Dottor.Blazor.UI.csproj" />
 		<ProjectReference Include="..\Shared\Dottor.Umarell.Shared.csproj" />
 	</ItemGroup>
 

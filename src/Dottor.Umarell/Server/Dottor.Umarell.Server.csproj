@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Dottor.Umarell.UI\Dottor.Umarell.UI.csproj" />
     <ProjectReference Include="..\Client\Dottor.Umarell.Client.csproj" />
     <ProjectReference Include="..\Shared\Dottor.Umarell.Shared.csproj" />
   </ItemGroup>

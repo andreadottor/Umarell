@@ -1,7 +1,7 @@
 ﻿@implements IAsyncDisposable
 
 @inject IMessageBoxService MessageBoxService
-@inject IJSRuntime JS
+@inject IJSInProcessRuntime JS
 
 <div @ref="_modalElement" class="modal fade" data-bs-backdrop="true" tabindex="-1" aria-labelledby="messagebox" aria-hidden="true">
     <div class="modal-dialog">
@@ -36,8 +36,8 @@
 
 @code {
     private ElementReference _modalElement;
-    private IJSObjectReference? _module;
-    private IJSObjectReference? _modalInstance;
+    private IJSInProcessObjectReference? _module;
+    private IJSInProcessObjectReference? _modalInstance;
 
     private string Title { get; set; } = "";
     private string Text { get; set; } = "";
@@ -53,15 +53,15 @@
                 Text = e.Text;
                 MessageBoxType = e.MessageBoxType;
                 ReturnCallback = e.ReturnCallback;
-                StateHasChanged();
-                _module?.InvokeVoidAsync("show", _modalInstance);
+                InvokeAsync(StateHasChanged);
+                _module?.InvokeVoid("show", _modalInstance);
             };
     }
 
     private async Task Callback(bool result)
     {
-        if(_module is not null)
-            await _module.InvokeVoidAsync("hide", _modalInstance);
+        if (_module is not null)
+            _module.InvokeVoid("hide", _modalInstance);
         // HACK: utile per permettere più MessageBox in sequenza
         //
         await Task.Delay(500);
@@ -72,8 +72,8 @@
     {
         if (firstRender)
         {
-            _module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Dottor.Umarell.UI/Components/MessageBox.razor.js");
-            _modalInstance = await _module.InvokeAsync<IJSObjectReference>("init", _modalElement);
+            _module = await JS.InvokeAsync<IJSInProcessObjectReference>("import", "./_content/Dottor.Blazor.UI/Components/MessageBox.razor.js");
+            _modalInstance = _module.Invoke<IJSInProcessObjectReference>("init", _modalElement);
         }
     }
 
