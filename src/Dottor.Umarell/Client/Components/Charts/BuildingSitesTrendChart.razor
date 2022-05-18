@@ -1,0 +1,76 @@
+﻿@inject IJSRuntime JS
+@inject ApiProxyService ApiProxy
+
+<canvas @ref="_chartElement"></canvas>
+
+@code {
+
+    private ElementReference _chartElement;
+    private IJSObjectReference? _mapModule;
+
+    private IEnumerable<BuildingSiteModel>? _items;
+
+    private bool _chartRendered = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _items = await ApiProxy.GetAllBuildingSiteAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _mapModule = await JS.ImportModuleAsync("./Components/Charts/BuildingSitesTrendChart.razor.js");
+        }
+
+        if(_mapModule is not null && 
+           _items is not null && 
+           !_chartRendered)
+        {
+            var months = GetMonths();
+            var labels = GetMonthsDescriptions(months);
+            var data = CountByMonth(_items, months);
+
+            await _mapModule.InvokeVoidAsync("draw", _chartElement, data, labels);
+            _chartRendered = true;
+        }
+    }
+
+
+    private Dictionary<DateTime, string> GetMonths()
+    {
+        var indexCurrentMonth = DateTime.Today.Month;
+
+        var list = new Dictionary<DateTime, string>();
+        for (int i = -6; i <= 0; i++)
+        {
+            var refDate = DateTime.Today.AddMonths(i);
+            var firstDayOfMonth = new DateTime(refDate.Year, refDate.Month, 1);
+            list.Add(
+                firstDayOfMonth,
+                refDate.ToString("MMMM YYYY")
+            );
+        }
+        return list;
+    }
+
+    private IEnumerable<string> GetMonthsDescriptions(Dictionary<DateTime, string> months)
+    {
+        return months.Select(x => x.Value).ToList();
+    }
+
+    private IEnumerable<int> CountByMonth(IEnumerable<BuildingSiteModel> items, Dictionary<DateTime, string> months)
+    {
+        var list = new List<int>();
+        foreach (var month in months)
+        {
+            var count = items.Count(x => x.StartDate > month.Key && x.StartDate < month.Key.AddMonths(1));
+            list.Add(count);
+        }
+        return list;
+    }
+
+
+
+}
