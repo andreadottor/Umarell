@@ -23,7 +23,9 @@
         </div>
         <div id="layoutSidenav_content">
             <main>
-                @PageContent
+                <ErrorBoundary>
+                    @PageContent
+                </ErrorBoundary>
             </main>
             <Footer Text="@FooterText">
                 @FooterContent
@@ -52,7 +54,7 @@
     {
         if (firstRender)
         {
-            _module = await JS.InvokeAsync<IJSInProcessObjectReference>("import", "./_content/Dottor.Blazor.UI/js/SBAdmin.js");
+            _module = await JS.ImportModuleAsync("./_content/Dottor.Blazor.UI/js/SBAdmin.js");
             _module.InvokeVoid("appInit");
         }
     }

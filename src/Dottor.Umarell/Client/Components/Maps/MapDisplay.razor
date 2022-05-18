@@ -30,14 +30,14 @@
     private IJSInProcessObjectReference? _mapInstance;
     private DotNetObjectReference<MapDisplay>? _objRef;
 
-    private IMarkerInfoComponent _markerInfoComponent;
+    private IMarkerInfoComponent? _markerInfoComponent;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _objRef = DotNetObjectReference.Create(this);
-            _mapModule = await JS.InvokeAsync<IJSInProcessObjectReference>("import", $"./Components/Maps/MapDisplay.razor.js?v={Utilities.GetVersion()}");
+            _mapModule = await JS.ImportModuleAsync("./Components/Maps/MapDisplay.razor.js");
             _mapInstance = _mapModule.Invoke<IJSInProcessObjectReference>("initMap", _mapElement, Items, _objRef);
         }
     }
