@@ -3,8 +3,8 @@
     // inizializzazione mappa
     //
     var map = new google.maps.Map(container, {
-        zoom: 18,
-        center: new google.maps.LatLng(45.8851534, 12.3373920),
+        zoom: 17,
+        center: new google.maps.LatLng(41.8317223, 12.4735195),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         disableDefaultUI: true,
         zoomControl: true
