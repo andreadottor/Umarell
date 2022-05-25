@@ -24,9 +24,9 @@
             _mapModule = await JS.ImportModuleAsync("./Components/Charts/BuildingSitesTrendChart.razor.js");
         }
 
-        if(_mapModule is not null && 
-           _items is not null && 
-           !_chartRendered)
+        if(_mapModule is not null
+           && _items is not null
+           && !_chartRendered)
         {
             var months = GetMonths();
             var labels = GetMonthsDescriptions(months);
@@ -36,7 +36,6 @@
             _chartRendered = true;
         }
     }
-
 
     private Dictionary<DateTime, string> GetMonths()
     {
@@ -57,7 +56,7 @@
 
     private IEnumerable<string> GetMonthsDescriptions(Dictionary<DateTime, string> months)
     {
-        return months.Select(x => x.Value).ToList();
+        return months.Select(x => x.Value).ToArray();
     }
 
     private IEnumerable<int> CountByMonth(IEnumerable<BuildingSiteModel> items, Dictionary<DateTime, string> months)
@@ -70,7 +69,6 @@
         }
         return list;
     }
-
 
 
 }
