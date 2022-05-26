@@ -1,47 +1,46 @@
-﻿namespace Dottor.Blazor.UI.Services
+﻿namespace Dottor.Blazor.UI.Services;
+
+using System;
+using System.Threading.Tasks;
+
+public class MessageBoxService : IMessageBoxService
 {
-    using System;
-    using System.Threading.Tasks;
+    public event EventHandler<MessageBoxShowEventArgs>? MessageBoxShow;
 
-    public class MessageBoxService : IMessageBoxService
+    public Task ShowAlertAsync(string title, string text)
     {
-        public event EventHandler<MessageBoxShowEventArgs>? MessageBoxShow;
+        var tcs = new TaskCompletionSource();
 
-        public Task ShowAlertAsync(string title, string text)
-        {
-            var tcs = new TaskCompletionSource();
+        MessageBoxShow?.Invoke(
+            this,
+            new(title, text, MessageBoxType.Alert, res =>
+            {
+                tcs?.SetResult();
+                return Task.CompletedTask;
+            }));
 
-            MessageBoxShow?.Invoke(
-                this,
-                new(title, text, MessageBoxType.Alert, res =>
-                {
-                    tcs?.SetResult();
-                    return Task.CompletedTask;
-                }));
-
-            return tcs.Task;
-        }
-
-        public Task<bool> ShowConfirmAsync(string title, string text)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-
-            MessageBoxShow?.Invoke(
-                this,
-                new(title, text, MessageBoxType.Confirm, res =>
-                {
-                    tcs?.SetResult(res);
-                    return Task.CompletedTask;
-                }));
-
-            return tcs.Task;
-        }
+        return tcs.Task;
     }
 
-    public enum MessageBoxType
+    public Task<bool> ShowConfirmAsync(string title, string text)
     {
-        Alert,
-        Confirm
-    }
+        var tcs = new TaskCompletionSource<bool>();
 
+        MessageBoxShow?.Invoke(
+            this,
+            new(title, text, MessageBoxType.Confirm, res =>
+            {
+                tcs?.SetResult(res);
+                return Task.CompletedTask;
+            }));
+
+        return tcs.Task;
+    }
 }
+
+public enum MessageBoxType
+{
+    Alert,
+    Confirm
+}
+

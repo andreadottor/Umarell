@@ -1,6 +1,5 @@
 using Dottor.Umarell.Client;
 using Dottor.Umarell.Client.Services;
-using Dottor.Blazor.UI;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

@@ -1,17 +1,16 @@
-﻿namespace Dottor.Umarell.Server.Models
+﻿namespace Dottor.Umarell.Server.Models;
+
+using Microsoft.EntityFrameworkCore;
+
+public class UmarellContext : DbContext
 {
-    using Microsoft.EntityFrameworkCore;
+    public UmarellContext(DbContextOptions<UmarellContext> options)
+       : base(options) { }
 
-    public class UmarellContext : DbContext
+    public DbSet<BuildingSite> BuildingSites { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public UmarellContext(DbContextOptions<UmarellContext> options)
-           : base(options) { }
-
-        public DbSet<BuildingSite> BuildingSites { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<BuildingSite>().ToTable("BuildingSites");
-        }
+        modelBuilder.Entity<BuildingSite>().ToTable("BuildingSites");
     }
 }

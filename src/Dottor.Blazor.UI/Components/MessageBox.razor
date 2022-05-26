@@ -13,19 +13,15 @@
                 @Text
             </div>
             <div class="modal-footer">
-                @if (MessageBoxType == MessageBoxType.Alert)
-                {
-                    <button type="button" class="btn btn-primary" @onclick="async () => await Callback(true)">
-                        Ok
-                    </button>
-                }
-                else if (MessageBoxType == MessageBoxType.Confirm)
-                {
-                    <button type="button" class="btn btn-primary" @onclick="async() => await Callback(true)">
-                        Ok
-                    </button>
+                <button type="button" class="btn btn-primary" 
+                        @onclick="async() => await SetCallbackResult(true)">
+                    Ok
+                </button>
 
-                    <button type="button" class="btn btn-secondary" @onclick="async () => await Callback(false)">
+                @if (MessageBoxType == MessageBoxType.Confirm)
+                {
+                    <button type="button" class="btn btn-secondary" 
+                            @onclick="async () => await SetCallbackResult(false)">
                         Cancel
                     </button>
                 }
@@ -39,26 +35,27 @@
     private IJSInProcessObjectReference? _module;
     private IJSInProcessObjectReference? _modalInstance;
 
-    private string Title { get; set; } = "";
-    private string Text { get; set; } = "";
+    private string Title { get; set; } = string.Empty;
+    private string Text { get; set; } = string.Empty;
     private MessageBoxType MessageBoxType { get; set; } = MessageBoxType.Alert;
     private Func<bool, Task>? ReturnCallback { get; set; }
 
     protected override void OnInitialized()
     {
-        MessageBoxService.MessageBoxShow +=
-            (sender, e) =>
-            {
-                Title = e.Title;
-                Text = e.Text;
-                MessageBoxType = e.MessageBoxType;
-                ReturnCallback = e.ReturnCallback;
-                InvokeAsync(StateHasChanged);
-                _module?.InvokeVoid("show", _modalInstance);
-            };
+        MessageBoxService.MessageBoxShow += MessageBoxShow;
     }
 
-    private async Task Callback(bool result)
+    private void MessageBoxShow(object? sender, MessageBoxShowEventArgs e)
+    {
+        Title = e.Title;
+        Text = e.Text;
+        MessageBoxType = e.MessageBoxType;
+        ReturnCallback = e.ReturnCallback;
+        InvokeAsync(StateHasChanged);
+        _module?.InvokeVoid("show", _modalInstance);
+    }
+
+    private async Task SetCallbackResult(bool result)
     {
         if (_module is not null)
             _module.InvokeVoid("hide", _modalInstance);
@@ -79,6 +76,8 @@
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
+         MessageBoxService.MessageBoxShow -= MessageBoxShow;
+
         if (_modalInstance is not null)
             await _modalInstance.DisposeAsync();
 
