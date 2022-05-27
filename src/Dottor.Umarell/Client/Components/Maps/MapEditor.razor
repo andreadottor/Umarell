@@ -15,16 +15,15 @@ Longitude: <em>@Value.Longitude</em>
     private IJSObjectReference? _mapInstance;
     private DotNetObjectReference<MapEditor>? _objRef;
 
-
-    [CascadingParameter] public EditContext? CascadedEditContext { get; set; }
-    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? Attributes { get; set; }
+    protected EditContext EditContext { get; set; } = default!;
+    protected FieldIdentifier FieldIdentifier { get; set; }
 
     [Parameter] public Coordinate Value { get; set; } = Coordinate.Empty;
     [Parameter] public EventCallback<Coordinate> ValueChanged { get; set; }
     [Parameter] public Expression<Func<Coordinate>>? ValueExpression { get; set; }
 
-    protected EditContext EditContext { get; set; } = default!;
-    protected internal FieldIdentifier FieldIdentifier { get; set; }
+    [CascadingParameter] public EditContext? CascadedEditContext { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? Attributes { get; set; }
 
 
     public override Task SetParametersAsync(ParameterView parameters)
@@ -111,4 +110,5 @@ Longitude: <em>@Value.Longitude</em>
 
         _objRef?.Dispose();
     }
+
 }
