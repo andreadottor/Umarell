@@ -16,14 +16,18 @@
 
 - Blazor Webassembly
 - Cookie authentication
+- MessageBoxService
+  - /src/Dottor.Blazor.UI/Services/MessageBoxService.cs
+  - /src/Dottor.Blazor.UI/Components/MessageBox.razor
 - Uso di Google Maps
-  - Client/Components/Maps/MapEditor.razor
-  - Client/Components/Maps/MapDisplay.razor
-  - Client/Pages/Index.razor
-  - Client/Pages/Insert.razor
+  - /src/Dottor.Umarell/Client/Components/Maps/MapEditor.razor
+  - /src/Dottor.Umarell/Client/Components/Maps/MapDisplay.razor
+  - /src/Dottor.Umarell/Client/Pages/Index.razor
+  - /src/Dottor.Umarell/Client/Pages/Insert.razor
 - Uso di Chart.js
-  - Client/Components/Charts/BuildingSitesTrendChart.razor
-  - Client/Pages/Stats.razor
+  - /src/Dottor.Umarell/Client/Components/Charts/BuildingSitesTrendChart.razor
+  - /src/Dottor.Umarell/Client/Pages/Stats.razor
 - Uso di QuestPDF
-  - Client/Pages/Exports.razor
+  - /src/Dottor.Umarell/Client/Pages/Exports.razor
 - Template con SB-Admin 2
+  - /src/Dottor.Blazor.UI/Layouts/SBAdminLayout.razor
