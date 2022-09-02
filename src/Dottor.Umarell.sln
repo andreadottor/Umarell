@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dottor.Umarell.Shared", "Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dottor.Blazor.UI", "Dottor.Blazor.UI\Dottor.Blazor.UI.csproj", "{ACF32758-A5E7-4432-A08B-3C0B40AE45EC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dottor.Umarell.MauiBlazor", "Dottor.Umarell.MauiBlazor\Dottor.Umarell.MauiBlazor.csproj", "{02D595BA-9790-40D2-969D-0F57160148DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,12 @@ Global
 		{ACF32758-A5E7-4432-A08B-3C0B40AE45EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACF32758-A5E7-4432-A08B-3C0B40AE45EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACF32758-A5E7-4432-A08B-3C0B40AE45EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D595BA-9790-40D2-969D-0F57160148DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D595BA-9790-40D2-969D-0F57160148DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D595BA-9790-40D2-969D-0F57160148DF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{02D595BA-9790-40D2-969D-0F57160148DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D595BA-9790-40D2-969D-0F57160148DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D595BA-9790-40D2-969D-0F57160148DF}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

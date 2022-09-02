@@ -2,6 +2,7 @@
 
 using Dottor.Umarell.Server.Models;
 using Dottor.Umarell.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
