@@ -2,6 +2,7 @@
 @implements IMarkerInfoComponent
 
 @inject IMessageBoxService MessageBoxService
+@inject HttpClient HttpClient
 
 <div @ref="MarkerInfoElement" style="display: none;">
     @if (SelectedItem is not null)
@@ -13,7 +14,7 @@
         </p>
         @if (!string.IsNullOrWhiteSpace(SelectedItem.FileName))
         {
-            <img src="/api/v1/BuildingSites/image/@SelectedItem.Id" alt="@SelectedItem.FileName" style="width: 100%;" />
+            <img src="@(HttpClient.BaseAddress)api/v1/BuildingSites/image/@SelectedItem.Id" alt="@SelectedItem.FileName" style="width: 100%;" />
         }
         else
         {
