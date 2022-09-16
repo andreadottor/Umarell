@@ -3,7 +3,7 @@
 
 @using System.Linq.Expressions
 
-@inject IJSInProcessRuntime JS
+@inject IJSRuntime JS
 @inject IMessageBoxService MessageBoxService
 
 <div class="map-element" @ref="_mapElement" @attributes="Attributes"></div>
@@ -26,8 +26,8 @@
 
     private ElementReference _markerNoInfoElement;
     private ElementReference _mapElement;
-    private IJSInProcessObjectReference? _mapModule;
-    private IJSInProcessObjectReference? _mapInstance;
+    private IJSObjectReference? _mapModule;
+    private IJSObjectReference? _mapInstance;
     private DotNetObjectReference<MapDisplay>? _objRef;
 
     private IMarkerInfoComponent? _markerInfoComponent;
@@ -38,7 +38,7 @@
         {
             _objRef = DotNetObjectReference.Create(this);
             _mapModule = await JS.ImportModuleAsync("./Components/Maps/MapDisplay.razor.js");
-            _mapInstance = _mapModule.Invoke<IJSInProcessObjectReference>("initMap", _mapElement, Items, _objRef);
+            _mapInstance = await _mapModule.InvokeAsync<IJSObjectReference>("initMap", _mapElement, Items, _objRef);
         }
     }
 

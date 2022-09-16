@@ -1,6 +1,6 @@
 ﻿@implements IAsyncDisposable
 
-@inject IJSInProcessRuntime JS
+@inject IJSRuntime JS
 
 <div class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -34,7 +34,7 @@
 </div>
 
 @code {
-    private IJSInProcessObjectReference? _module;
+    private IJSObjectReference? _module;
 
     [Parameter] public string Title { get; set; } = "Sample title";
     [Parameter] public string HomeUrl { get; set; } = "/";
@@ -53,7 +53,7 @@
         if (firstRender)
         {
             _module = await JS.ImportModuleAsync("./_content/Dottor.Blazor.UI/js/SBAdmin.js");
-            _module.InvokeVoid("appInit");
+            await _module.InvokeVoidAsync("appInit");
         }
     }
 

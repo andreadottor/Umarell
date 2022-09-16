@@ -9,6 +9,8 @@
   - https://www.xedotnet.org/eventi/blazor-lo-sapevi-che/
 - **Blazor ♥️ JavaScript** (Blazor Conf 2022) del 27 maggio 2022
   - https://blazorconf.it/
+- **Hybrid web apps with Blazor** del 16 settembre 2022
+  - https://www.xedotnet.org/eventi/net-maui/
 
 ---
 
@@ -31,3 +33,5 @@
   - /src/Dottor.Umarell/Client/Pages/Exports.razor
 - Template con SB-Admin 2
   - /src/Dottor.Blazor.UI/Layouts/SBAdminLayout.razor
+
+- MAUI Blazor App
